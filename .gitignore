@@ -5,8 +5,9 @@
 *.pyc
 *.swp
 .buildlog/
+.claude/
 .history
-
+.idea/
 
 
 # Flutter repo-specific
