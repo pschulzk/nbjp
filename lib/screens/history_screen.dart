@@ -137,7 +137,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             '$actual / $planned push-ups',
                             style: TextStyle(
                               fontSize: 16,
-                              color: isComplete ? Colors.black : Colors.orange.shade700,
+                              color: isComplete ? Colors.white : Colors.orange,
                               fontWeight: isComplete ? FontWeight.normal : FontWeight.w500,
                             ),
                           ),

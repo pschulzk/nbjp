@@ -15,7 +15,28 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'NBJP',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        brightness: Brightness.dark,
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.blue,
+          secondary: Colors.orange,
+          surface: Color(0xFF1E1E1E),
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        cardTheme: const CardThemeData(
+          color: Color(0xFF212121),
+          elevation: 4,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Color(0xFF1E1E1E),
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+        ),
         useMaterial3: true,
       ),
       home: const InitialScreen(),

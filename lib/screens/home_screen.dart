@@ -389,17 +389,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('NBJP'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: IndexedStack(
+      body: SafeArea(
+        child: IndexedStack(
         index: _selectedIndex,
-        children: [
-          _buildHomeTab(),
-          const HistoryScreen(),
-        ],
+          children: [
+            _buildHomeTab(),
+            const HistoryScreen(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

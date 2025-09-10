@@ -168,16 +168,34 @@ class _SessionScreenState extends State<SessionScreen> {
   Widget build(BuildContext context) {
     if (_isResting) {
       return Scaffold(
-        backgroundColor: Colors.blue.shade50,
-        appBar: AppBar(
-          title: const Text('Rest Time'),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-        ),
-        body: Center(
+        body: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const Text(
+                      'Rest Time',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
               const Text(
                 'Rest',
                 style: TextStyle(
@@ -246,6 +264,10 @@ class _SessionScreenState extends State<SessionScreen> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -255,18 +277,32 @@ class _SessionScreenState extends State<SessionScreen> {
     final isMaxSet = _plannedReps[_currentSetIndex] == widget.training.maxReps;
     
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Set ${_currentSetIndex + 1} of ${_plannedReps.length}'),
-        backgroundColor: isMaxSet ? Colors.orange : Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  Text(
+                    'Set ${_currentSetIndex + 1} of ${_plannedReps.length}',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           if (isMaxSet)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
-              color: Colors.orange.shade100,
+              color: Colors.orange.withValues(alpha: 0.2),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -404,8 +440,9 @@ class _SessionScreenState extends State<SessionScreen> {
                 ),
               ],
             ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
