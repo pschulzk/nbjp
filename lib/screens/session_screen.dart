@@ -100,6 +100,32 @@ class _SessionScreenState extends State<SessionScreen> {
     });
   }
   
+  void _showCancelConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancel Workout?'),
+        content: const Text('Are you sure you want to cancel this workout? Your progress will not be saved.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Continue Workout'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              Navigator.of(context).pop(); // Close session screen
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('Cancel Workout'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _completeSession() async {
     final duration = DateTime.now().difference(_sessionStartTime!).inSeconds;
     
@@ -178,7 +204,7 @@ class _SessionScreenState extends State<SessionScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: _showCancelConfirmation,
                     ),
                     const Text(
                       'Rest Time',
@@ -283,17 +309,18 @@ class _SessionScreenState extends State<SessionScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
                   Text(
                     'Set ${_currentSetIndex + 1} of ${_plannedReps.length}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: _showCancelConfirmation,
                   ),
                 ],
               ),

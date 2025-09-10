@@ -464,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
@@ -478,15 +478,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon,
                     key: ValueKey(isSelected),
                     color: isSelected ? Colors.blue : Colors.grey,
-                    size: isSelected ? 26 : 24,
+                    size: isSelected ? 24 : 22,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 200),
                   style: TextStyle(
                     color: isSelected ? Colors.blue : Colors.grey,
-                    fontSize: isSelected ? 13 : 12,
+                    fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   ),
                   child: Text(label),
