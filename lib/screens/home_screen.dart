@@ -398,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _selectedIndex,
         children: [
           _buildHomeTab(),
-          HistoryScreen(onRefresh: _loadData),
+          const HistoryScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -407,6 +407,10 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _selectedIndex = index;
           });
+          if (index == 0) {
+            // Reload home data when returning to home tab
+            _loadData();
+          }
         },
         items: const [
           BottomNavigationBarItem(

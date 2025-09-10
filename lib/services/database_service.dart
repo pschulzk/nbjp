@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:flutter/foundation.dart';
 import '../models/training.dart';
 import '../models/session.dart';
 
@@ -83,16 +84,21 @@ class DatabaseService {
   }
 
   Future<List<Session>> getSessions({int? limit}) async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'sessions',
-      orderBy: 'date DESC',
-      limit: limit,
-    );
+    try {
+      final db = await database;
+      final List<Map<String, dynamic>> maps = await db.query(
+        'sessions',
+        orderBy: 'date DESC',
+        limit: limit,
+      );
 
-    return List.generate(maps.length, (i) {
-      return Session.fromMap(maps[i]);
-    });
+      return List.generate(maps.length, (i) {
+        return Session.fromMap(maps[i]);
+      });
+    } catch (e) {
+      debugPrint('Error getting sessions from database: $e');
+      return [];
+    }
   }
 
   Future<List<Session>> getSessionsByTrainingId(int trainingId) async {

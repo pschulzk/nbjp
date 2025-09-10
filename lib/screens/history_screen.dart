@@ -4,9 +4,7 @@ import '../models/session.dart';
 import '../services/database_service.dart';
 
 class HistoryScreen extends StatefulWidget {
-  final VoidCallback? onRefresh;
-  
-  const HistoryScreen({super.key, this.onRefresh});
+  const HistoryScreen({super.key});
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -24,13 +22,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> _loadSessions() async {
-    setState(() => _isLoading = true);
-    final sessions = await _dbService.getSessions();
-    setState(() {
-      _sessions = sessions;
-      _isLoading = false;
-    });
-    widget.onRefresh?.call();
+    try {
+      setState(() => _isLoading = true);
+      final sessions = await _dbService.getSessions();
+      if (mounted) {
+        setState(() {
+          _sessions = sessions;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading sessions: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   void _showSessionDetails(Session session) {
