@@ -4,6 +4,7 @@ import '../models/training.dart';
 import '../models/session.dart';
 import '../services/database_service.dart';
 import '../services/rep_calculator.dart';
+import '../services/health_service.dart';
 
 class SessionScreen extends StatefulWidget {
   final Training training;
@@ -16,6 +17,7 @@ class SessionScreen extends StatefulWidget {
 
 class _SessionScreenState extends State<SessionScreen> {
   final _dbService = DatabaseService();
+  final _healthService = HealthService();
   late List<int> _plannedReps;
   late List<int> _actualReps;
   int _currentSetIndex = 0;
@@ -138,6 +140,17 @@ class _SessionScreenState extends State<SessionScreen> {
     );
     
     await _dbService.insertSession(session);
+    
+    // Sync with Apple Health
+    try {
+      await _healthService.writeWorkoutSession(
+        session,
+        sessionStart: _sessionStartTime,
+      );
+      debugPrint('Workout synced with Apple Health');
+    } catch (e) {
+      debugPrint('Failed to sync with Apple Health: $e');
+    }
     
     if (mounted) {
       _showCompletionDialog();

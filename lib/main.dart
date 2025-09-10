@@ -4,6 +4,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/database_service.dart';
+import 'services/health_service.dart';
 
 void main() {
   // Make status bar transparent
@@ -72,13 +73,22 @@ class InitialScreen extends StatefulWidget {
 
 class _InitialScreenState extends State<InitialScreen> {
   final _dbService = DatabaseService();
+  final _healthService = HealthService();
   bool _isLoading = true;
   bool _hasTraining = false;
 
   @override
   void initState() {
     super.initState();
-    _checkExistingTraining();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    // Initialize HealthKit
+    await _healthService.initialize();
+    
+    // Check for existing training
+    await _checkExistingTraining();
   }
 
   Future<void> _checkExistingTraining() async {

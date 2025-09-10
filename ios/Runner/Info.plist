@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>NBJP reads your workout data to track your push-up progress and fitness trends</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>NBJP saves your push-up workouts to Apple Health to track your fitness journey</string>
 </dict>
 </plist>

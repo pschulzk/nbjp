@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 import '../models/training.dart';
 import '../services/database_service.dart';
 import '../services/rep_calculator.dart';
+import '../services/health_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Training training;
@@ -18,7 +20,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _maxRepsController;
   late int _setsCount;
   final _dbService = DatabaseService();
+  final _healthService = HealthService();
   List<int> _calculatedReps = [];
+  bool _healthKitEnabled = false;
   
   @override
   void initState() {
@@ -28,6 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     _setsCount = widget.training.setsCount;
     _calculateReps();
+    _checkHealthKitStatus();
+  }
+  
+  Future<void> _checkHealthKitStatus() async {
+    if (Platform.isIOS) {
+      setState(() {
+        _healthKitEnabled = _healthService.isAvailable;
+      });
+    }
   }
   
   @override
@@ -218,6 +231,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ),
+              if (Platform.isIOS) ...[ 
+                const SizedBox(height: 20),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Apple Health Integration',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SwitchListTile(
+                          title: const Text('Sync with Apple Health'),
+                          subtitle: const Text(
+                            'Automatically save workouts to Apple Health',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          value: _healthKitEnabled,
+                          onChanged: (value) async {
+                            if (value) {
+                              final authorized = await _healthService.requestPermissions();
+                              if (!mounted) return;
+                              setState(() {
+                                _healthKitEnabled = authorized;
+                              });
+                              if (!mounted) return;
+                              if (authorized) {
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Apple Health connected'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              } else {
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please allow Health access in Settings'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                              }
+                            } else {
+                              setState(() {
+                                _healthKitEnabled = false;
+                              });
+                            }
+                          },
+                          activeTrackColor: Colors.green.withValues(alpha: 0.5),
+                          thumbColor: WidgetStateProperty.resolveWith((states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return Colors.green;
+                            }
+                            return null;
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               if (_calculatedReps.isNotEmpty) ...[
                 const SizedBox(height: 20),
                 Card(
