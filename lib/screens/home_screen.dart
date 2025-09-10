@@ -504,32 +504,13 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Main content that extends full height with animation
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) {
-              final isHome = (child as Container).key == const ValueKey('home');
-              final offsetBegin = isHome 
-                ? const Offset(-1.0, 0.0)  // Home comes from left
-                : const Offset(1.0, 0.0);   // History comes from right
-              
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: offsetBegin,
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  )),
-                  child: child,
-                ),
-              );
-            },
-            child: _selectedIndex == 0 
-              ? Container(key: const ValueKey('home'), child: _buildHomeTab())
-              : Container(key: const ValueKey('history'), child: HistoryScreen(key: _historyKey)),
+          // Main content that extends full height
+          IndexedStack(
+            index: _selectedIndex,
+            children: [
+              _buildHomeTab(),
+              HistoryScreen(key: _historyKey),
+            ],
           ),
           // Gradient overlay for status bar area
           Positioned(
