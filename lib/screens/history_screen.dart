@@ -253,10 +253,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     if (_sessions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      return Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+          bottom: 100,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             Icon(
               Icons.history,
               size: 64,
@@ -278,7 +283,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 color: Colors.grey.shade500,
               ),
             ),
-          ],
+            ],
+          ),
         ),
       );
     }
@@ -286,7 +292,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return RefreshIndicator(
       onRefresh: _loadSessions,
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: MediaQuery.of(context).padding.top + 16,
+          bottom: 100, // Extra padding for blurred nav bar
+        ),
         itemCount: _sessions.length,
         itemBuilder: (context, index) {
           final session = _sessions[index];
