@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/session.dart';
 import '../services/database_service.dart';
+import '../widgets/animated_scale_tap.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -374,11 +375,11 @@ class HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCli
           final session = _sessions[index];
           final isToday = DateUtils.isSameDay(session.date, DateTime.now());
           
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: InkWell(
-              onTap: () => _showSessionDetails(session),
-              borderRadius: BorderRadius.circular(12),
+          return AnimatedScaleTap(
+            onTap: () => _showSessionDetails(session),
+            scaleFactor: 0.98,
+            child: Card(
+              margin: const EdgeInsets.only(bottom: 12),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(

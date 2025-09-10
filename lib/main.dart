@@ -26,6 +26,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'NBJP',
       theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          },
+        ),
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Colors.blue,

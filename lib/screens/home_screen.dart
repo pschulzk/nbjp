@@ -5,6 +5,8 @@ import '../models/training.dart';
 import '../models/session.dart';
 import '../services/database_service.dart';
 import '../services/rep_calculator.dart';
+import '../widgets/animated_scale_tap.dart';
+import '../widgets/slide_route.dart';
 import 'session_screen.dart';
 import 'settings_screen.dart';
 import 'history_screen.dart';
@@ -45,8 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _startWorkout() {
     if (_currentTraining != null) {
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SessionScreen(training: _currentTraining!),
+        SlideRoute(
+          page: SessionScreen(training: _currentTraining!),
+          direction: SlideDirection.down,  // Slides down from top
         ),
       ).then((_) => _loadData());
     }
@@ -54,7 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHomeTab() {
     if (_currentTraining == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: AnimatedOpacity(
+          opacity: 1.0,
+          duration: const Duration(milliseconds: 300),
+          child: const CircularProgressIndicator(),
+        ),
+      );
     }
 
     final calculatedReps = RepCalculator.calculateReps(
@@ -225,21 +234,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _startWorkout,
-            style: ElevatedButton.styleFrom(
+          AnimatedScaleTap(
+            onTap: _startWorkout,
+            child: Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
+              decoration: BoxDecoration(
+                color: Colors.blue,
                 borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ),
-            child: const Text(
-              'Start Workout',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              child: const Text(
+                'Start Workout',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -256,84 +274,108 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${_stats['totalSessions'] ?? 0}',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    child: Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 500),
+                              child: Text(
+                                '${_stats['totalSessions'] ?? 0}',
+                                key: ValueKey(_stats['totalSessions']),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Sessions',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Sessions',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${_stats['totalPushups'] ?? 0}',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    child: Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 500),
+                              child: Text(
+                                '${_stats['totalPushups'] ?? 0}',
+                                key: ValueKey(_stats['totalPushups']),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Total Push-ups',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Total Push-ups',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${(_stats['avgCompletionRate'] ?? 0).toStringAsFixed(0)}%',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    child: Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 500),
+                              child: Text(
+                                '${(_stats['avgCompletionRate'] ?? 0).toStringAsFixed(0)}%',
+                                key: ValueKey(_stats['avgCompletionRate']),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Completion',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Completion',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -352,7 +394,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
             ..._recentSessions.map((session) {
-              return Card(
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                child: Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   leading: CircleAvatar(
@@ -385,6 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+              ),
               );
             }),
           ],
@@ -416,24 +461,38 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           height: double.infinity,
           alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                color: isSelected ? Colors.blue : Colors.grey,
-                size: 24,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? Colors.blue : Colors.grey,
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    icon,
+                    key: ValueKey(isSelected),
+                    color: isSelected ? Colors.blue : Colors.grey,
+                    size: isSelected ? 26 : 24,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: TextStyle(
+                    color: isSelected ? Colors.blue : Colors.grey,
+                    fontSize: isSelected ? 13 : 12,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                  child: Text(label),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -448,13 +507,32 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Main content that extends full height
-          IndexedStack(
-            index: _selectedIndex,
-            children: [
-              _buildHomeTab(),
-              HistoryScreen(key: _historyKey),
-            ],
+          // Main content that extends full height with animation
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              final isHome = (child as Container).key == const ValueKey('home');
+              final offsetBegin = isHome 
+                ? const Offset(-1.0, 0.0)  // Home comes from left
+                : const Offset(1.0, 0.0);   // History comes from right
+              
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: offsetBegin,
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  )),
+                  child: child,
+                ),
+              );
+            },
+            child: _selectedIndex == 0 
+              ? Container(key: const ValueKey('home'), child: _buildHomeTab())
+              : Container(key: const ValueKey('history'), child: HistoryScreen(key: _historyKey)),
           ),
           // Gradient overlay for status bar area
           Positioned(
