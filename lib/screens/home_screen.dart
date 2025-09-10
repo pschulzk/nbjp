@@ -244,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withOpacity(0.3),
+                    color: Colors.blue.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -442,6 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required IconData icon,
     required String label,
     required int index,
+    bool includeBottomPadding = true,
   }) {
     final isSelected = _selectedIndex == index;
     return Expanded(
@@ -458,41 +459,37 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         behavior: HitTestBehavior.opaque,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
           height: double.infinity,
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.blue.withValues(alpha: 0.08) : Colors.transparent,
+          ),
           alignment: Alignment.center,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    icon,
-                    key: ValueKey(isSelected),
-                    color: isSelected ? Colors.blue : Colors.grey,
-                    size: isSelected ? 24 : 22,
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  icon,
+                  key: ValueKey(isSelected),
+                  color: isSelected ? Colors.blue : Colors.grey,
+                  size: isSelected ? 24 : 22,
                 ),
-                const SizedBox(height: 2),
-                AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 200),
-                  style: TextStyle(
-                    color: isSelected ? Colors.blue : Colors.grey,
-                    fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  ),
-                  child: Text(label),
+              ),
+              const SizedBox(height: 2),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  color: isSelected ? Colors.blue : Colors.grey,
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
-              ],
-            ),
+                child: Text(label),
+              ),
+            ],
           ),
         ),
       ),
@@ -571,25 +568,56 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  child: SafeArea(
-                    top: false,
-                    child: SizedBox(
-                      height: 60,
-                      child: Row(
-                        children: [
-                          _buildNavItem(
-                            icon: Icons.home,
-                            label: 'Home',
-                            index: 0,
+                  child: Column(
+                    children: [
+                      SafeArea(
+                        top: false,
+                        bottom: false,
+                        child: SizedBox(
+                          height: 60,
+                          child: Row(
+                            children: [
+                              _buildNavItem(
+                                icon: Icons.home,
+                                label: 'Home',
+                                index: 0,
+                                includeBottomPadding: false,
+                              ),
+                              _buildNavItem(
+                                icon: Icons.history,
+                                label: 'History',
+                                index: 1,
+                                includeBottomPadding: false,
+                              ),
+                            ],
                           ),
-                          _buildNavItem(
-                            icon: Icons.history,
-                            label: 'History',
-                            index: 1,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      // Bottom padding area with active background
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.bottom,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                color: _selectedIndex == 0 
+                                  ? Colors.blue.withValues(alpha: 0.08) 
+                                  : Colors.transparent,
+                              ),
+                            ),
+                            Expanded(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                color: _selectedIndex == 1 
+                                  ? Colors.blue.withValues(alpha: 0.08) 
+                                  : Colors.transparent,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
