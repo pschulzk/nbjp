@@ -25,11 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic> _stats = {};
   int _selectedIndex = 0;
   final GlobalKey<HistoryScreenState> _historyKey = GlobalKey();
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 0);
     _loadData();
+  }
+  
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -451,6 +459,11 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _selectedIndex = index;
           });
+          _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
           if (index == 0) {
             _loadData();
           } else if (index == 1) {
@@ -504,9 +517,19 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Main content that extends full height
-          IndexedStack(
-            index: _selectedIndex,
+          // Main content that extends full height with page transitions
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+              if (index == 0) {
+                _loadData();
+              } else if (index == 1) {
+                _historyKey.currentState?.loadSessions();
+              }
+            },
             children: [
               _buildHomeTab(),
               HistoryScreen(key: _historyKey),
