@@ -61,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Form(
               key: _formKey,
@@ -255,7 +255,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                 ],
-                const Spacer(),
+                const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: _saveAndContinue,
                   style: ElevatedButton.styleFrom(
@@ -274,7 +274,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 60),
                 ],
               ),
             ),
