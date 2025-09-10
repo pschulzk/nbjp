@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Session> _recentSessions = [];
   Map<String, dynamic> _stats = {};
   int _selectedIndex = 0;
+  final GlobalKey<HistoryScreenState> _historyKey = GlobalKey();
 
   @override
   void initState() {
@@ -405,8 +406,12 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         if (index == 0) {
           _loadData();
+        } else if (index == 1) {
+          // Trigger refresh for history screen
+          _historyKey.currentState?.loadSessions();
         }
       },
+      behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Column(
@@ -445,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedIndex,
             children: [
               _buildHomeTab(),
-              const HistoryScreen(),
+              HistoryScreen(key: _historyKey),
             ],
           ),
           // Gradient overlay for status bar area

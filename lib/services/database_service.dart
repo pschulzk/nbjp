@@ -115,6 +115,11 @@ class DatabaseService {
     });
   }
 
+  Future<void> deleteAllSessions() async {
+    final db = await database;
+    await db.delete('sessions');
+  }
+
   Future<Map<String, dynamic>> getStatistics() async {
     final db = await database;
     

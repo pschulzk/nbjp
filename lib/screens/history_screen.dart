@@ -7,21 +7,24 @@ class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  State<HistoryScreen> createState() => HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveClientMixin {
   final _dbService = DatabaseService();
   List<Session> _sessions = [];
   bool _isLoading = true;
 
   @override
+  bool get wantKeepAlive => false;
+
+  @override
   void initState() {
     super.initState();
-    _loadSessions();
+    loadSessions();
   }
 
-  Future<void> _loadSessions() async {
+  Future<void> loadSessions() async {
     try {
       setState(() => _isLoading = true);
       final sessions = await _dbService.getSessions();
@@ -37,6 +40,44 @@ class _HistoryScreenState extends State<HistoryScreen> {
         setState(() {
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _clearAllRecords() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear All Records'),
+        content: const Text(
+          'Are you sure you want to delete all workout history? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('Delete All'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _dbService.deleteAllSessions();
+      await loadSessions();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All records cleared'),
+            backgroundColor: Colors.orange,
+          ),
+        );
       }
     }
   }
@@ -255,6 +296,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -297,7 +339,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: _loadSessions,
+      onRefresh: loadSessions,
       child: ListView.builder(
         padding: EdgeInsets.only(
           left: 16,
@@ -305,8 +347,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
           top: MediaQuery.of(context).padding.top + 16,
           bottom: 100, // Extra padding for blurred nav bar
         ),
-        itemCount: _sessions.length,
+        itemCount: _sessions.length + 1, // Add 1 for the clear button
         itemBuilder: (context, index) {
+          // Show clear button as last item
+          if (index == _sessions.length) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 24, bottom: 20),
+              child: TextButton.icon(
+                onPressed: _clearAllRecords,
+                icon: const Icon(Icons.delete_forever, color: Colors.red),
+                label: const Text(
+                  'Clear All Records',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: Colors.red, width: 1),
+                  ),
+                ),
+              ),
+            );
+          }
+          
           final session = _sessions[index];
           final isToday = DateUtils.isSameDay(session.date, DateTime.now());
           
