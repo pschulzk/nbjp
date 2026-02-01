@@ -1,24 +1,21 @@
 #!/bin/sh
 
-set -e # Exit immediately if a command fails
+# Fail immediately if any command fails
+set -e
 
-# 1. Install Flutter (using the stable branch)
+# 1. Move to the project root (where pubspec.yaml is)
+cd "$CI_PRIMARY_REPOSITORY_PATH"
+
+# 2. Install Flutter
 git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
 export PATH="$PATH:$HOME/flutter/bin"
 
-# 2. Pre-cache artifacts for iOS only (saves time/compute hours)
+# 3. Prepare Flutter
 flutter precache --ios
-
-# 3. Install your project dependencies
-cd .. # Move from 'ios/ci_scripts' to project root
 flutter pub get
 
-# 4. Initialize the iOS build files (This creates the missing Generated.xcconfig)
-flutter build ios --config-only --release
-
-# 5. Install CocoaPods (Required for device_info_plus and others)
-cd ios
-HOMEBREW_NO_AUTO_UPDATE=1 brew install cocoapods
-pod install
+# 4. Install CocoaPods and Pods
+brew install cocoapods
+cd ios && pod install
 
 exit 0
