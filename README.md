@@ -52,7 +52,7 @@ Please [Open a GitHub Issue](https://github.com/pschulzk/nbjp/issues/new).
 
 NBJP is a project by [**Solid Group**](https://www.solidgroup.agency/en/).
 
-- **Imprint:** [Solid Group Imprint](https://www.solidgroup.agency/en#impressum)
+- **Imprint:** [Solid Group Imprint](https://www.solidgroup.agency/en/impressum)
 - **Contact:** For billing or legal inquiries, please refer to the [contact form on our website](https://www.solidgroup.agency/en#kontakt).
 - **EULA:** NBJP app distributed via Apple App Store is governed by the [Apple Standard EULA](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/).
 
