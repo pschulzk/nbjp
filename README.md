@@ -3,7 +3,7 @@
 > No Bullshit, just Pushups – The leanest Pushup Counter.
 
 [![Platform: iOS 17+](https://img.shields.io/badge/Platform-iOS-lightgrey)](https://www.apple.com/ios/)
-![Latest Release](https://img.shields.io/github/v/release/pschulzk/nbjp?color=brightgreen&label=latest%20release)
+![Latest Tag](https://img.shields.io/github/v/tag/pschulzk/nbjp?color=brightgreen&label=latest%20release&sort=semver)
 ![Last Commit](https://img.shields.io/github/last-commit/pschulzk/nbjp)
 
 **NBJP** is a minimalist pushup tracker designed for everyone who value privacy and simplicity. No accounts, no tracking — only pushups.
